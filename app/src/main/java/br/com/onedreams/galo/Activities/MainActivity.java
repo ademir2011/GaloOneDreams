@@ -1,7 +1,9 @@
 package br.com.onedreams.galo.Activities;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,8 +11,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -47,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.tvRssMain) TextView tvRssMain;
     @Bind(R.id.tvAvisoMain) TextView tvAvisoMain;
     @Bind(R.id.ivPropagandaMain) ImageView ivPropagandaMain;
+    @Bind(R.id.tvCotacaoDolarMain) TextView tvCotacaoDolarMain;
 
     Handler mHandlerRss = new Handler();
     int contadorRss = 0;
@@ -57,36 +71,57 @@ public class MainActivity extends AppCompatActivity {
     Handler mHandlerPropaganda = new Handler();
     boolean boolActive = false;
 
+    Handler mHandlerDolar = new Handler();
+
     public static final String PEP_ID = "1";
-    public static final int DEFAULT_TIME_SHOW_RSS = 5 * 1000;
-    public static final int DEFAULT_TIME_UPDATE_RSS = 1 * 60 * 1000;
-    public static final int DEFAULT_TIME_SHOW_AVISOS = 5 * 1000;
-    public static final int DEFAULT_TIME_UPDATE_AVISOS = 1 * 60 * 1000;
-    public static final int DEFAULT_TIME_UPDATE_PROPAGANDA = 1 * 60  * 1000;
+    public static final String DEFAULT_MENSSAGE = "Galo Mídias Avançadas";
+    public static final int DEFAULT_UPDATE_AND_SHOW_DOLAR = 1 * 5 * 1000;
+    public static final int DEFAULT_TIME_SHOW_RSS = 1 * 5 * 1000;
+    public static final int DEFAULT_TIME_UPDATE_RSS = 1 * 5 * 1000;
+    public static final int DEFAULT_TIME_SHOW_AVISOS = 1 * 5 * 1000;
+    public static final int DEFAULT_TIME_UPDATE_AVISOS = 1 * 5 * 1000;
+    public static final int DEFAULT_TIME_UPDATE_PROPAGANDA = 1 * 5  * 1000;
+
+    private URL urlAvisos;
+
+    private String urlJsonObj = "http://api.promasters.net.br/cotacao/v1/valores?moedas=USD&alt=json";
+
+    RequestQueue requestQueue;
+
+    @Override
+    public boolean moveTaskToBack(boolean nonRoot) {
+        return super.moveTaskToBack(false);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
 
         fullscreen();
+
+        try {
+            urlAvisos = new URL("http://onedreams.com.br/galo/gestao/pep_" + PEP_ID + "/avisos/config_avisos.txt");
+        } catch (MalformedURLException e) {
+            urlAvisos = null;
+            e.printStackTrace();
+        }
+
+        requestQueue = Volley.newRequestQueue(this);
 
         //--------------- ATUALIZA E EXIBE RSS
 
         mListNoticias = new ArrayList<>();
 
-        new GetRssFeed().execute("http://g1.globo.com/dynamo/brasil/rss2.xml");
+        updateRss();
 
         showRss();
-
-        updateRss();
 
         //--------------- ATUALIZA E EXIBE AVISOS
 
         listAvisos = new ArrayList<>();
-
-        new UpdateAvisos().execute();
 
         updateAvisos();
 
@@ -96,11 +131,13 @@ public class MainActivity extends AppCompatActivity {
 
         mapPropaganda = new HashMap<>();
 
-        new UpdatePropaganda().execute();
-
         updatePropaganda();
 
         showPropaganda();
+
+        //-------------- ATUALIZA E EXIBE DOLAR
+
+        updateAndShowDolar();
 
     }
 
@@ -140,8 +177,6 @@ public class MainActivity extends AppCompatActivity {
                 while (true) {
                     if (boolActive) {
 
-
-
                         try {
 
                             Date date = new Date();   // given date
@@ -168,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     });
 
+                                    Toast.makeText(getApplicationContext(), "PROPAGANDA ATUALIZADA", Toast.LENGTH_SHORT).show();
 
                                 }
 
@@ -194,8 +230,6 @@ public class MainActivity extends AppCompatActivity {
 
                         new UpdateAvisos().execute();
 
-                        Log.v("debug", "ATUALIZOU AVISO");
-
                         contadorAvisos = 0;
 
                         Thread.sleep(DEFAULT_TIME_UPDATE_AVISOS);
@@ -217,18 +251,26 @@ public class MainActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 while (true) {
                     try {
-                        Thread.sleep(DEFAULT_TIME_SHOW_AVISOS);
+
                         mHandlerAvisos.post(new Runnable() {
 
                             @Override
                             public void run() {
 
-                                tvAvisoMain.setText(listAvisos.get(contadorAvisos++));
-
-                                Log.v("debug", "AVISO EXIBIDO NA TELA");
+                                try {
+                                    tvAvisoMain.setText(listAvisos.get(contadorAvisos));
+                                    System.out.println(contadorAvisos);
+                                    contadorAvisos++;
+                                } catch (Exception e) {
+                                    System.out.println(e);
+                                    tvAvisoMain.setText(DEFAULT_MENSSAGE);
+                                }
 
                             }
                         });
+
+                        Thread.sleep(DEFAULT_TIME_SHOW_AVISOS);
+
                     } catch (Exception e) {
                         // TODO: handle exception
                     }
@@ -245,14 +287,13 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 // TODO Auto-generated method stub
                 while (true) {
+
                     try {
                         Thread.sleep(DEFAULT_TIME_UPDATE_RSS);
 
                         new GetRssFeed().execute("http://g1.globo.com/dynamo/brasil/rss2.xml");
 
                         contadorRss = 0;
-
-                        Log.v("debug", "ATUALIZOU RSS");
 
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -268,40 +309,55 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // TODO Auto-generated method stub
+
+
                 while (true) {
+
                     try {
+
                         Thread.sleep(DEFAULT_TIME_SHOW_RSS);
+
                         mHandlerRss.post(new Runnable() {
 
                             @Override
                             public void run() {
 
-                                tvRssMain.setText(mListNoticias.get(contadorRss++));
-                                Log.v("debug", "RSS EXIBIDO NA TELA");
+                                try {
+                                    tvRssMain.setText(mListNoticias.get(contadorRss));
+                                    contadorRss++;
+                                } catch (Exception e) {
+                                    System.out.println(e);
+                                    tvRssMain.setText(DEFAULT_MENSSAGE);
+                                }
 
                             }
                         });
+
                     } catch (Exception e) {
-                        // TODO: handle exception
+                        tvRssMain.setText(DEFAULT_MENSSAGE);
                     }
+
                 }
+
             }
         }).start();
 
     }
 
-    private class GetRssFeed extends AsyncTask<String, Void, Void> {
+    public class GetRssFeed extends AsyncTask<String, Void, Void> {
 
         @Override
         protected Void doInBackground(String... params) {
             try {
+                mListNoticias.clear();
                 RssReader rssReader = new RssReader(params[0]);
                 for (RssItem item : rssReader.getItems()){
                     mListNoticias.add(item.getTitle());
                 }
             } catch (Exception e) {
                 Log.v("Error Parsing Data", e + "");
+                mListNoticias.clear();
+                mListNoticias.add(DEFAULT_MENSSAGE);
             }
             return null;
         }
@@ -312,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    class UpdateAvisos extends AsyncTask<Void, Void, Void> {
+    public class UpdateAvisos extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -321,9 +377,9 @@ public class MainActivity extends AppCompatActivity {
 
             try {
 
-                URL url = new URL("http://onedreams.com.br/galo/gestao/pep_" + PEP_ID + "/avisos/config_avisos.txt");
+                listAvisos.clear();
 
-                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection = (HttpURLConnection) urlAvisos.openConnection();
 
                 int code = urlConnection.getResponseCode();
 
@@ -347,6 +403,8 @@ public class MainActivity extends AppCompatActivity {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                listAvisos.clear();
+                listAvisos.add(DEFAULT_MENSSAGE);
             } finally {
                 assert urlConnection != null;
                 urlConnection.disconnect();
@@ -358,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    class UpdatePropaganda extends AsyncTask<Void, Void, Void> {
+    public class UpdatePropaganda extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -409,6 +467,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             } catch (IOException e) {
+                mapPropaganda.clear();
                 e.printStackTrace();
             } finally {
                 assert urlConnection != null;
@@ -421,6 +480,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     private void fullscreen() {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -429,6 +489,77 @@ public class MainActivity extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
+    @Override
+    protected void onResume() {
+        onStart();
+        super.onResume();
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(false);
+    }
+
+    public void updateAndShowDolar(){
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true){
+
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+                            urlJsonObj, null, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                            try {
+
+                                JSONObject obs1 = response.getJSONObject("valores");
+                                JSONObject obs2 = obs1.getJSONObject("USD");
+                                final String dolar = obs2.getString(String.valueOf("valor"));
+
+                                mHandlerDolar.post(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        tvCotacaoDolarMain.setText("VALOR DO DOLAR "+dolar+" REAIS");
+                                    }
+                                });
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(getApplicationContext(),
+                                        "Error: " + e.getMessage(),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            VolleyLog.d("ERROR>>>>", "Error: " + error.getMessage());
+                            Toast.makeText(getApplicationContext(),
+                                    error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    requestQueue.add(jsonObjectRequest);
+
+                    try {
+                        Thread.sleep(DEFAULT_UPDATE_AND_SHOW_DOLAR);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+
+    }
+
+    public void updateAndShowTemperature(){
+
     }
 
 }

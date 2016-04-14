@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 23
@@ -27,4 +26,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.pkmmte.pkrss:pkrss:1.2'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.survivingwithandroid:weatherlib:1.6.0'
+    compile 'com.survivingwithandroid:weatherlib_volleyclient:1.6.0'
+    compile 'com.mcxiaoke.volley:library:1.0.6@aar'
 }

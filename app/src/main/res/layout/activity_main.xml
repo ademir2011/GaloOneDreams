@@ -26,70 +26,59 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="80dp"
         android:layout_alignParentRight="true"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/rlBottomMain"
-        android:padding="15dp">
-
-        <View
-            android:id="@+id/vAvisosMain"
-            android:layout_above="@+id/vLogoNumberMain"
-            android:background="#123321"
-            android:alpha="0.9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/tvTitleMain"
-            android:gravity="center"
-            android:textSize="15sp"
-            android:layout_marginTop="10dp"
-            android:layout_centerHorizontal="true"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="NOSSO ESPAÇO"
-            android:textColor="@color/textColorPrimary"/>
-
-        <TextView
-            android:id="@+id/tvAvisoMain"
-            android:padding="10dp"
-            android:layout_below="@+id/tvTitleMain"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/vLogoNumberMain"
-            android:text=" Informamos que haverá reuniao geral na proxima quarta feira\n\nPAUTA\n\n- Reforma "
-            android:textColor="@color/textColorPrimary"
-            android:textSize="10sp"/>
-
-        <View
-            android:id="@+id/vLogoNumberMain"
-            android:layout_alignParentBottom="true"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:background="#123555"/>
+        android:layout_width="350dp"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rlBottomMain">
 
         <RelativeLayout
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/vAvisosMain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:background="@color/textColorPrimary"
-                android:id="@+id/ivLogoMain"
-                android:layout_width="50dp"
-                android:layout_height="50dp" />
+            android:id="@+id/rlAvisosMain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/rlContatoMain"
+            android:background="#F1E9E6"
+            android:gravity="center"
+            android:alpha=".9">
 
             <TextView
-                android:layout_marginLeft="10dp"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/ivLogoMain"
-                android:padding="5dp"
+                android:fontFamily="sans-serif-smallcaps"
+                android:id="@+id/tvAvisoMain"
+                android:padding="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="(84) 9999-9999"
-                android:textColor="@color/textColorPrimary"/>
+                android:text="Informamos que haverá reuniao geral na proxima quarta feira\mamos que mamos que haverá reuniao geral na proxima quarta feira\n\nPAUTA\n\n- Reforma "
+                android:textColor="#095964"
+                android:textSize="16sp"/>
+
+        </RelativeLayout>
+        
+        <RelativeLayout
+            android:id="@+id/rlContatoMain"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:background="#E1E1E1"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_centerVertical="true"
+                android:id="@+id/ivLogoMain"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:src="@drawable/logo_cor"/>
+
+            <TextView
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/ivLogoMain"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="(84) 98181-1101"
+                android:textColor="#095964"/>
 
         </RelativeLayout>
 
@@ -98,79 +87,79 @@
     <RelativeLayout
         android:id="@+id/rlBottomMain"
         android:layout_width="wrap_content"
-        android:layout_height="70dp"
+        android:layout_height="85dp"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp">
 
-        <View
-            android:id="@+id/vLeftLogoMain"
+        <RelativeLayout
+            android:id="@+id/rlG1LogoMain"
+            android:layout_width="140dp"
             android:layout_alignParentLeft="true"
-            android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:background="@android:color/white"/>
+            android:background="@android:color/white">
 
-        <View
-            android:id="@+id/vCenterNoticiaMain"
-            android:layout_toRightOf="@+id/vLeftLogoMain"
-            android:layout_toLeftOf="@+id/vRightLogoMain"
-            android:layout_above="@+id/vBottomDolarMain"
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/g1_logo"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlCentralNewsMain"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/black"/>
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/rlG1LogoMain"
+            android:layout_toLeftOf="@+id/rlRightInfoMain"
+            android:layout_above="@+id/rlBottomDolarMain"
+            android:background="#EA5B0C">
 
-        <TextView
-            android:id="@+id/tvRssMain"
-            android:padding="10dp"
-            android:layout_toRightOf="@+id/vLeftLogoMain"
-            android:layout_toLeftOf="@+id/vRightLogoMain"
-            android:layout_above="@+id/vBottomDolarMain"
+            <TextView
+                android:id="@+id/tvRssMain"
+                android:fontFamily="sans-serif-thin"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textColorPrimary"
+                android:text="CORTES NO ORÇAMENTO PODEM IMPEDIR VOTO ELETRONICO EM 2016"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlBottomDolarMain"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/textColorPrimary"
-            android:text="CORTES NO ORÇAMENTO PODEM IMPEDIR VOTO ELETRONICO EM 2016"/>
-
-        <TextView
-            android:id="@+id/tvFonteMain"
-            android:padding="5dp"
-            android:textSize="6.5sp"
-            android:layout_toLeftOf="@+id/vRightLogoMain"
-            android:layout_above="@+id/vBottomDolarMain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/textColorPrimary"
-            android:text="FONTE: G1"/>
-
-
-        <View
-            android:id="@+id/vBottomDolarMain"
+            android:layout_height="20dp"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/vLeftLogoMain"
-            android:layout_toLeftOf="@+id/vRightLogoMain"
-            android:layout_width="wrap_content"
-            android:layout_height="15dp"
-            android:background="@android:color/holo_red_dark"/>
+            android:layout_toRightOf="@+id/rlG1LogoMain"
+            android:layout_toLeftOf="@+id/rlRightInfoMain"
+            android:background="#C04A0A">
 
-        <TextView
-            android:gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/vLeftLogoMain"
-            android:layout_toLeftOf="@+id/vRightLogoMain"
-            android:layout_below="@+id/vCenterNoticiaMain"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tvCotacaoDolarMain"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:textColor="@color/textColorPrimary"
+                android:text="COTAÇÂO ATUAL DO DOLAR "/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlRightInfoMain"
+            android:layout_width="140dp"
             android:layout_height="match_parent"
-            android:textSize="7sp"
-            android:textColor="@color/textColorPrimary"
-            android:text="DESCRIÇÂO DA COTAÇÂO DO DOLAR"/>
-
-
-        <View
-            android:id="@+id/vRightLogoMain"
             android:layout_alignParentRight="true"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"/>
+            android:background="#106D7C">
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
