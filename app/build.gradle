@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.0 rc2"
 
     defaultConfig {
-        applicationId "br.com.onedreams.galo"
+        applicationId "br.com.onedreams.galo3"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
@@ -29,4 +29,5 @@ dependencies {
     compile 'com.survivingwithandroid:weatherlib:1.6.0'
     compile 'com.survivingwithandroid:weatherlib_volleyclient:1.6.0'
     compile 'com.mcxiaoke.volley:library:1.0.6@aar'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }
