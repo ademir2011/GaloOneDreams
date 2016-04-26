@@ -41,12 +41,13 @@ public class DaoPropaganda {
 
                 while (checkConnection.isOnline()) {
 
+                    mapPropaganda.clear();
+
+                    contadorRss = 0;
+
+                    new UpdatePropaganda().execute(urlPropagandas);
+
                     try {
-                        mapPropaganda.clear();
-
-                        contadorRss = 0;
-
-                        new UpdatePropaganda().execute(urlPropagandas);
 
                         Thread.sleep(DEFAULT_TIME_UPDATE_PROPAGANDA);
 

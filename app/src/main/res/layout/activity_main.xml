@@ -31,7 +31,7 @@
             android:layout_width="1020dp"
             android:layout_height="match_parent"
             android:background="@android:color/black"
-            android:scaleType="center"/>
+            android:scaleType="centerCrop"/>
 
     </RelativeLayout>
 
@@ -40,7 +40,7 @@
         android:layout_marginTop="40dp"
         android:layout_marginBottom="40dp"
         android:layout_marginRight="40dp"
-        android:layout_width="380dp"
+        android:layout_width="420dp"
         android:layout_height="match_parent"
         android:layout_above="@+id/rlBottomMain">
 

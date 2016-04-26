@@ -34,12 +34,13 @@ public class DaoRss {
                 // TODO Auto-generated method stub
                 while (checkConnection.isOnline()) {
 
+                    mListNoticias.clear();
+
+                    contadorRss = 0;
+
+                    new UpdateRss().execute(urlRssFonte);
+
                     try {
-                        mListNoticias.clear();
-
-                        contadorRss = 0;
-
-                        new UpdateRss().execute(urlRssFonte);
 
                         Thread.sleep(DEFAULT_TIME_UPDATE_RSS);
 

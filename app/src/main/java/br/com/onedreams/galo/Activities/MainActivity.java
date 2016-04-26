@@ -61,14 +61,14 @@ public class MainActivity extends AppCompatActivity {
     Handler mHandlerPB = new Handler();
 
     public static final String PEP_ID = "1";
-    public static final int DEFAULT_UPDATE_AND_SHOW_DOLAR = 1 * 1 * 10 * 1000;
-    public static final int DEFAULT_TIME_TIME_UPDATE_AND_SHOW = 1 * 1 * 1 * 1;
-    public static final int DEFAULT_UPDATE_AND_SHOW_TEMPERATURA = 1 * 1 * 10 * 1000;
-    public static final int DEFAULT_TIME_SHOW_RSS = 1 * 1 * 500;
-    public static final int DEFAULT_TIME_UPDATE_RSS = 1 * 1 * 5 * 1000;
-    public static final int DEFAULT_TIME_SHOW_AVISOS = 1 * 1 * 500;
-    public static final int DEFAULT_TIME_UPDATE_AVISOS = 1 * 1 * 5 * 1000;
-    public static final int DEFAULT_TIME_UPDATE_PROPAGANDA = 1 * 3 * 60  * 1000;
+    public static final int DEFAULT_UPDATE_AND_SHOW_DOLAR = 1 * 60 * 60 * 1000;
+    public static final int DEFAULT_TIME_TIME_UPDATE_AND_SHOW = 1 * 1 * 1 * 10;
+    public static final int DEFAULT_UPDATE_AND_SHOW_TEMPERATURA = 1 * 60 * 60 * 1000;
+    public static final int DEFAULT_TIME_SHOW_RSS = 1 * 10 * 1000;
+    public static final int DEFAULT_TIME_UPDATE_RSS = 1 * 60 * 60 * 1000;
+    public static final int DEFAULT_TIME_SHOW_AVISOS = 1 * 10 * 1000;
+    public static final int DEFAULT_TIME_UPDATE_AVISOS = 1 * 60 * 60 * 1000;
+    public static final int DEFAULT_TIME_UPDATE_PROPAGANDA = 1 * 60 * 60 * 1000;
     public static final int DEFAULT_TIME_SHOW_PROPAGANDA = 1 * 1  * 100;
 
     private URL urlAvisos;
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-            urlPropagandas = new URL("http://onedreams.com.br/galo/gestao/pep_"+PEP_ID+"/propagandas/config_propagandas.txt");
+            urlPropagandas = new URL("http://onedreams.com.br/galo/gestao/pep_" + PEP_ID + "/propagandas/config_propagandas.txt");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                     try {
-                        Thread.sleep(1);
+                        Thread.sleep(50);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
