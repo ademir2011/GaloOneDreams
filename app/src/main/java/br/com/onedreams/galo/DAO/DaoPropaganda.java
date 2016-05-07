@@ -25,7 +25,6 @@ import br.com.onedreams.galo.Classes.CheckConnection;
  */
 public class DaoPropaganda {
 
-    private int contadorRss = 0;
     Map<Calendar, String> mapPropaganda;
     private boolean enable = false;
     CheckConnection checkConnection;
@@ -42,8 +41,6 @@ public class DaoPropaganda {
                 while (checkConnection.isOnline()) {
 
                     mapPropaganda.clear();
-
-                    contadorRss = 0;
 
                     new UpdatePropaganda().execute(urlPropagandas);
 
@@ -122,14 +119,6 @@ public class DaoPropaganda {
 
             return null;
         }
-    }
-
-    public int getContadorRss() {
-        return contadorRss;
-    }
-
-    public void setContadorRss(int contadorRss) {
-        this.contadorRss = contadorRss;
     }
 
     public Map<Calendar, String> getMapPropaganda() {

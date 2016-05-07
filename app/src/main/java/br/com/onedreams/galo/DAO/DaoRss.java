@@ -62,8 +62,11 @@ public class DaoRss {
 
                 RssReader rssReader = new RssReader(params[0]);
                 for (RssItem item : rssReader.getItems()){
-                    mListNoticias.add(item.getTitle());
+                    String tempTitle = item.getTitle();
+                    tempTitle = tempTitle.replace("\"", "'");
+                    mListNoticias.add(tempTitle);
                 }
+
             } catch (Exception e) {
                 Log.v("Error Parsing Data", e + "");
                 mListNoticias.clear();
