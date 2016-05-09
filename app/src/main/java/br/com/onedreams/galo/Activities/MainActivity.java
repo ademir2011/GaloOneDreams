@@ -74,9 +74,6 @@ public class MainActivity extends AppCompatActivity {
     Handler mHandlerAvisos = new Handler();
 
     Handler mHandlerPropaganda = new Handler();
-
-    Handler mHandlerPB = new Handler();
-
     public static final String PEP_ID = "1";
     public static final String pathSdCard = "storage/external_storage/sdcard1/";
     //public static final String pathSdCard = "mnt/external_sdcard/sdcard/";
@@ -93,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
     public static final int DEFAULT_UPDATE_SEND_LOG = 1 * 1 * 60 * 1000;
 
     private URL urlAvisos;
-    private URL urlPropagandas;
 
     RequestQueue requestQueue;
 
@@ -104,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
     private String urlJsonObjDolar = "http://api.promasters.net.br/cotacao/v1/valores?moedas=USD&alt=json";
     private String urlRssFonte = "http://g1.globo.com/dynamo/rn/rio-grande-do-norte/rss2.xml";
 
-    DaoPropaganda daoPropaganda;
     DaoRss daoRss;
     DaoAvisos daoAvisos;
     DaoDolar daoDolar;
@@ -112,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
     DaoTime daoTime;
     CheckConnection checkConnection;
     DAOSDcard daosDcard;
+    DaoLog daoLog;
 
     @Override
     public boolean moveTaskToBack(boolean nonRoot) {
@@ -123,17 +119,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        daoLog = new DaoLog(this);
+
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "----------- daoLogInstanciado -----------");
+
         ButterKnife.bind(this);
+
         fullscreen();
+
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "FullScreenAtivado");
 
         try {
             urlAvisos = new URL("http://onedreams.com.br/galo/gestao/pep_" + PEP_ID + "/avisos/config_avisos.txt");
-            urlPropagandas = new URL("http://onedreams.com.br/galo/gestao/pep_" + PEP_ID + "/propagandas/config_propagandas.txt");
         } catch (MalformedURLException e) {
             urlAvisos = null;
-            urlPropagandas = null;
             e.printStackTrace();
         }
+
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "url instanciada");
 
         checkConnection = new CheckConnection(this);
 
@@ -143,14 +146,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 while(!checkConnection.isOnline()){
-                    Log.e(">>","SEM INTERNET");
                     try {
+                        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "dispositivo sem internet");
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                Log.e(">>","COM INTERNET");
+                daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "dispositivo com internet");
                 try {
                     executaAtualizacoes();
                 } catch (IOException e) {
@@ -159,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }).start();
+
     }
 
     boolean showPb = false;
@@ -391,41 +395,52 @@ public class MainActivity extends AppCompatActivity {
 
     public void executaAtualizacoes() throws IOException {
 
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "entrou no metodo executaAtualizacoes()");
+
         //--------------- ATUALIZA E EXIBE RSS
 
-        daoRss = new DaoRss(urlRssFonte, DEFAULT_TIME_UPDATE_RSS, this);
+        daoRss = new DaoRss(urlRssFonte, DEFAULT_TIME_UPDATE_RSS, this, daoLog, pathSdCard);
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoRss instanciada");
 
         //--------------- ATUALIZA E EXIBE AVISOS
 
-        daoAvisos = new DaoAvisos(urlAvisos, DEFAULT_TIME_UPDATE_AVISOS, this);
+        daoAvisos = new DaoAvisos(urlAvisos, DEFAULT_TIME_UPDATE_AVISOS, this, daoLog, pathSdCard);
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoAvisos instanciada");
 
         //-------------- ATUALIZA E EXIBE DOLAR
 
-        daoDolar = new DaoDolar(urlJsonObjDolar, DEFAULT_UPDATE_AND_SHOW_DOLAR, requestQueue, this);
+        daoDolar = new DaoDolar(urlJsonObjDolar, DEFAULT_UPDATE_AND_SHOW_DOLAR, requestQueue, this, daoLog, pathSdCard);
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoDolar instanciada");
 
         //-------------- ATUALIZA E EXIBE TEMPERATURA
 
-        daoTemperatura = new DaoTemperatura(urlJsonObsTemperatura, DEFAULT_UPDATE_AND_SHOW_TEMPERATURA, requestQueue, this);
+        daoTemperatura = new DaoTemperatura(urlJsonObsTemperatura, DEFAULT_UPDATE_AND_SHOW_TEMPERATURA, requestQueue, this, daoLog, pathSdCard);
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoTemperatura instanciada");
 
         //-------------- ATUALIZA E EXIBE HORA
 
-        daoTime = new DaoTime(DEFAULT_TIME_TIME_UPDATE_AND_SHOW);
+        daoTime = new DaoTime(DEFAULT_TIME_TIME_UPDATE_AND_SHOW, daoLog, pathSdCard);
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoTime instanciada");
 
         //-------------- ATUALIZA E EXIBE PROPAGANDAS
 
-        //daoPropaganda = new DaoPropaganda(urlPropagandas, DEFAULT_TIME_UPDATE_PROPAGANDA, this);
-        daosDcard = new DAOSDcard(pathSdCard+"config.txt", DEFAULT_TIME_READ_CONFIG_TXT);
+        daosDcard = new DAOSDcard(pathSdCard+"config.txt", DEFAULT_TIME_READ_CONFIG_TXT, daoLog);
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daosDcard instanciada");
 
         //-------------- UPDATE SCREEN
 
         showPropagandas();
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "showPropagandas instanciada");
 
         showDolarTimeTemperatura();
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "showDolarTimeTemperatura instanciada");
 
         showRss();
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "showRss instanciada");
 
         //showAvisos();
 
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "------------ daoLog finalizada -------------");
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)

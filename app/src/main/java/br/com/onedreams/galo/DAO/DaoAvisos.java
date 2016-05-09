@@ -26,11 +26,17 @@ public class DaoAvisos {
     List<String> listAvisos;
     public static final String DEFAULT_MENSSAGE = "Galo Mídias Avançadas";
     CheckConnection checkConnection;
+    private DaoLog daoLog;
+    private String pathSdCard;
 
-    public DaoAvisos(final URL urlAvisos, final int DEFAULT_TIME_UPDATE_AVISOS, Context context) {
+    public DaoAvisos(final URL urlAvisos, final int DEFAULT_TIME_UPDATE_AVISOS, Context context, final DaoLog daoLog, final String pathSdCard) {
         listAvisos = new ArrayList<>();
         listAvisos.add(DEFAULT_MENSSAGE);
         checkConnection = new CheckConnection(context);
+        this.daoLog = daoLog;
+        this.pathSdCard = pathSdCard;
+
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoAvisos() -> entrou no método");
 
         new Thread(new Runnable() {
             @Override
@@ -39,11 +45,16 @@ public class DaoAvisos {
                 while (checkConnection.isOnline()) {
 
                     try {
+
                         listAvisos.clear();
 
                         contadorAvisos = 0;
 
+                        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoAvisos() -> com internet - entrou no while");
+
                         new UpdateAvisos().execute(urlAvisos);
+
+                        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoAvisos() -> com internet - executou o UpdateAvisos().execute()");
 
                         Thread.sleep(DEFAULT_TIME_UPDATE_AVISOS);
 
@@ -53,6 +64,9 @@ public class DaoAvisos {
                 }
             }
         }).start();
+
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoAvisos() -> finalizou");
+
     }
 
     public class UpdateAvisos extends AsyncTask<URL, Void, Void>{

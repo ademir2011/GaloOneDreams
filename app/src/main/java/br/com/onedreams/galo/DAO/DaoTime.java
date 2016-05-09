@@ -13,8 +13,15 @@ public class DaoTime {
 
     private int hour = 0;
     private int minute = 0;
+    private DaoLog daoLog;
+    private String pathSdCard;
 
-    public DaoTime(final int DEFAULT_TIME_TIME_UPDATE_AND_SHOW) {
+    public DaoTime(final int DEFAULT_TIME_TIME_UPDATE_AND_SHOW, final DaoLog daoLog, final String pathSdCard) {
+
+        this.daoLog = daoLog;
+        this.pathSdCard = pathSdCard;
+
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoTime() -> entrou no método");
 
         new Thread(new Runnable() {
             @Override
@@ -22,7 +29,11 @@ public class DaoTime {
 
                 while(true){
 
+                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoTime() -> com internet - entrou no while");
+
                     new UpdateTime().execute();
+
+                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoTime() -> com internet - executou o UpdateTime.execute()");
 
                     try {
                         Thread.sleep(DEFAULT_TIME_TIME_UPDATE_AND_SHOW);
@@ -34,6 +45,8 @@ public class DaoTime {
 
             }
         }).start();
+
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoTime() -> finalizou");
 
     }
 

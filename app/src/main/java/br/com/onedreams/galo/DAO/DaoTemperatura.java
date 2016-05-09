@@ -24,12 +24,17 @@ public class DaoTemperatura {
     private double temperatura = 0;
     private RequestQueue requestQueueTemperatura;
     CheckConnection checkConnection;
+    private DaoLog daoLog;
+    private String pathSdCard;
 
-
-    public DaoTemperatura(final String urlJsonObsTemperatura, final int DEFAULT_UPDATE_AND_SHOW_TEMPERATURA, RequestQueue requestQueue, Context context) {
+    public DaoTemperatura(final String urlJsonObsTemperatura, final int DEFAULT_UPDATE_AND_SHOW_TEMPERATURA, RequestQueue requestQueue, Context context, final DaoLog daoLog, final String pathSdCard) {
 
         requestQueueTemperatura = requestQueue;
         checkConnection = new CheckConnection(context);
+        this.daoLog = daoLog;
+        this.pathSdCard = pathSdCard;
+
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoTemperatura() -> entrou no método");
 
         new Thread(new Runnable() {
             @Override
@@ -37,7 +42,11 @@ public class DaoTemperatura {
 
                 while(checkConnection.isOnline()){
 
+                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoTemperatura() -> com internet - entrou no while");
+
                     new UpdateTemperatura().execute(urlJsonObsTemperatura);
+
+                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoTemperatura() -> com internet - executou o UpdateTemperatura.execute()");
 
                     try {
                         Thread.sleep(DEFAULT_UPDATE_AND_SHOW_TEMPERATURA);
@@ -49,6 +58,8 @@ public class DaoTemperatura {
 
             }
         }).start();
+
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoTemperatura() -> finalizou");
 
     }
 

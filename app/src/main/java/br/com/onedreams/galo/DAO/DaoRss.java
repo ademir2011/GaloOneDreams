@@ -20,13 +20,18 @@ public class DaoRss {
     private List<String> mListNoticias;
     public static final String DEFAULT_MENSSAGE = "Galo Mídias Avançadas";
     CheckConnection checkConnection;
+    private DaoLog daoLog;
+    private String pathSdCard;
 
-
-    public DaoRss(final String urlRssFonte, final int DEFAULT_TIME_UPDATE_RSS, Context context) {
+    public DaoRss(final String urlRssFonte, final int DEFAULT_TIME_UPDATE_RSS, Context context, final DaoLog daoLog, final String pathSdCard) {
 
         mListNoticias = new ArrayList<>();
         mListNoticias.add(DEFAULT_MENSSAGE);
         checkConnection = new CheckConnection(context);
+        this.daoLog = daoLog;
+        this.pathSdCard = pathSdCard;
+
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoRss() -> entrou no método");
 
         new Thread(new Runnable() {
             @Override
@@ -38,7 +43,11 @@ public class DaoRss {
 
                     contadorRss = 0;
 
+                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoRss() -> com internet - entrou no while");
+
                     new UpdateRss().execute(urlRssFonte);
+
+                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoRss() -> com internet - executou o UpdateRss.execute()");
 
                     try {
 
@@ -50,6 +59,8 @@ public class DaoRss {
                 }
             }
         }).start();
+
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoRss() -> finalizou");
 
     }
 
@@ -63,6 +74,7 @@ public class DaoRss {
                 RssReader rssReader = new RssReader(params[0]);
                 for (RssItem item : rssReader.getItems()){
                     String tempTitle = item.getTitle();
+                    Log.e(">>>", tempTitle);
                     tempTitle = tempTitle.replace("\"", "'");
                     mListNoticias.add(tempTitle);
                 }

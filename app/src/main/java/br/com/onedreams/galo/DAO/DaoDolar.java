@@ -25,11 +25,17 @@ public class DaoDolar {
     private String dolar = "00.00";
     RequestQueue requestQueueDolar;
     CheckConnection checkConnection;
+    private DaoLog daoLog;
+    private String pathSdCard;
 
-    public DaoDolar(final String urlJsonObjDolar, final int DEFAULT_UPDATE_AND_SHOW_DOLAR, RequestQueue requestQueue, Context context) {
+    public DaoDolar(final String urlJsonObjDolar, final int DEFAULT_UPDATE_AND_SHOW_DOLAR, RequestQueue requestQueue, Context context, final DaoLog daoLog, final String pathSdCard) {
 
         requestQueueDolar = requestQueue;
         checkConnection = new CheckConnection(context);
+        this.daoLog = daoLog;
+        this.pathSdCard = pathSdCard;
+
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoDolar() -> entrou no método");
 
         new Thread(new Runnable() {
             @Override
@@ -37,7 +43,11 @@ public class DaoDolar {
 
                 while(checkConnection.isOnline()){
 
+                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoDolar() -> com internet - entrou no while");
+
                     new Update().execute(urlJsonObjDolar);
+
+                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoDolar() -> com internet - executou o Update().execute()");
 
                     try {
                         Thread.sleep(DEFAULT_UPDATE_AND_SHOW_DOLAR);
@@ -49,6 +59,8 @@ public class DaoDolar {
 
             }
         }).start();
+
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoDolar() -> finalizou");
 
     }
 
