@@ -8,29 +8,31 @@
     android:background="@drawable/painel">
 
     <RelativeLayout
+        android:visibility="gone"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="150dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_width="match_parent"
         android:layout_height="350dp"
-        android:background="#105968">
+        android:background="#E5E6E6">
 
     </RelativeLayout>
 
     <RelativeLayout
+        android:layout_above="@+id/rlBottomMain"
         android:id="@+id/rlPropagandaMain"
-        android:layout_marginLeft="30dp"
-        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <ImageView
             android:visibility="visible"
             android:id="@+id/ivPropagandaMain"
-            android:layout_width="1220dp"
-            android:layout_height="540dp"
+            android:layout_width="1250dp"
+            android:layout_height="550dp"
             android:src="@drawable/teste_2"
             android:background="@android:color/black"
             android:scaleType="centerCrop"/>
@@ -38,9 +40,56 @@
         <VideoView
             android:visibility="invisible"
             android:id="@+id/vvPropagandaMain"
-            android:layout_width="1200dp"
-            android:layout_height="530dp"
+            android:layout_width="1250dp"
+            android:layout_height="550dp"
             android:scaleType="centerCrop"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlRightInfoMain"
+        android:layout_width="180dp"
+        android:layout_height="100dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:background="#30E2E2E1"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/ivTimeMain"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_access_time_white_48dp"/>
+
+        <TextView
+            android:layout_toRightOf="@+id/ivTimeMain"
+            android:id="@+id/tvTimeMain"
+            android:textSize="30sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textColorPrimary"
+            android:layout_marginLeft="10dp"
+            android:text="00:00"/>
+
+        <ImageView
+            android:id="@+id/ivCloudMain"
+            android:layout_below="@+id/ivTimeMain"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_cloud_queue_white_48dp"/>
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_below="@+id/ivTimeMain"
+            android:layout_toRightOf="@id/ivCloudMain"
+            android:id="@+id/tvCloudMain"
+            android:textSize="30sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textColorPrimary"
+            android:text="00ºC"/>
 
     </RelativeLayout>
 
@@ -109,35 +158,18 @@
         android:layout_marginLeft="10dp"
         android:id="@+id/rlBottomMain"
         android:layout_width="wrap_content"
-        android:layout_height="130dp"
+        android:layout_height="120dp"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="25dp">
+        android:layout_marginBottom="40dp">
 
         <RelativeLayout
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:id="@+id/rlG1LogoMain"
-            android:layout_width="180dp"
-            android:layout_alignParentLeft="true"
-            android:layout_height="match_parent"
-            android:background="#90106D7C">
-
-            <ImageView
-                android:layout_width="1020dp"
-                android:layout_height="926dp"
-                android:src="@drawable/galo"
-                android:scaleType="centerCrop"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
+            android:visibility="gone"
             android:id="@+id/rlTabMain"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:layout_above="@+id/rlCentralNewsMain"
             android:layout_toRightOf="@+id/rlG1LogoMain"
-            android:layout_toLeftOf="@+id/rlRightInfoMain"
             android:background="#105968"
             android:gravity="center_vertical">
 
@@ -155,101 +187,100 @@
 
         <RelativeLayout
             android:id="@+id/rlCentralNewsMain"
-            android:layout_width="wrap_content"
-            android:layout_height="85dp"
-            android:layout_toRightOf="@+id/rlG1LogoMain"
-            android:layout_toLeftOf="@+id/rlRightInfoMain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/rlG1LogoMain"
             android:layout_above="@+id/rlBottomDolarMain"
-            android:background="#106D7C">
+            android:background="#3C3C3C">
 
             <TextView
                 android:id="@+id/tvRssMain"
                 android:textSize="18sp"
-                android:padding="5dp"
+                android:padding="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/textColorPrimary"
                 android:text="www.galomidiaavancada.com.br"/>
 
             <TextView
+                android:visibility="gone"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:id="@+id/tvFonteMain"
-                android:textSize="10sp"
+                android:textSize="15sp"
                 android:padding="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/textColorPrimary"
                 android:text="FONTE G1"/>
 
-
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rlBottomDolarMain"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/rlG1LogoMain"
-            android:layout_toLeftOf="@+id/rlRightInfoMain"
-            android:background="#105968">
+            android:layout_toLeftOf="@+id/rlG1LogoMain"
+            android:background="#222222"
+            android:gravity="center_vertical">
 
             <TextView
+                android:layout_marginLeft="10dp"
                 android:id="@+id/tvCotacaoDolarMain"
                 android:padding="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textColor="@color/textColorPrimary"
                 android:text="www.galomidiaavancada.com.br "/>
 
         </RelativeLayout>
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="-91dp"
+            android:src="@drawable/arrow"
+            android:layout_toLeftOf="@+id/rlG1LogoMain">
+
+        </ImageView>
+
         <RelativeLayout
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:id="@+id/rlRightInfoMain"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:id="@+id/rlG1LogoMain"
             android:layout_width="180dp"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:background="#90106D7C"
-            android:gravity="center">
+            android:background="#EAEAE9">
 
             <ImageView
-                android:id="@+id/ivTimeMain"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_access_time_white_48dp"/>
-
-            <TextView
-                android:layout_toRightOf="@+id/ivTimeMain"
-                android:id="@+id/tvTimeMain"
-                android:textSize="30sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/textColorPrimary"
-                android:layout_marginLeft="10dp"
-                android:text="00:00"/>
-
-            <ImageView
-                android:id="@+id/ivCloudMain"
-                android:layout_below="@+id/ivTimeMain"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_cloud_queue_white_48dp"/>
-
-            <TextView
-                android:layout_marginLeft="10dp"
-                android:layout_below="@+id/ivTimeMain"
-                android:layout_toRightOf="@id/ivCloudMain"
-                android:id="@+id/tvCloudMain"
-                android:textSize="30sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/textColorPrimary"
-                android:text="00ºC"/>
+                android:layout_width="1020dp"
+                android:layout_height="926dp"
+                android:src="@drawable/rsz_logo_cor"
+                android:scaleType="centerCrop"/>
 
         </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlBottomRss"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_above="@id/rlBottomMain"
+        android:background="#99222222"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/tvRssBottomMain"
+            android:textColor="@color/textColorPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="19sp"
+            android:text="Extra extra  dilma é reeleite e temer é preso. Cunha viaja para cuba e vira socialista. Ele divide suas terras para o mst. aisjdiasjd ----!@#!*(!#!@"/>
 
     </RelativeLayout>
 

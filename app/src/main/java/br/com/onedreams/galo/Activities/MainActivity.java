@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.pbLoading) ProgressBar pbLoading;
     @Bind(R.id.vvPropagandaMain) VideoView vvPropagandaMain;
     @Bind(R.id.tvTabMain) TextView tvTabMain;
+    @Bind(R.id.tvRssBottomMain) TextView tvRssBottomMain;
 
     Handler mHandlerScreen = new Handler();
 
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     Handler mHandlerPropaganda = new Handler();
     public static final String PEP_ID = "1";
     public static final String pathSdCard = "storage/external_storage/sdcard1/";
-    //public static final String pathSdCard = "mnt/external_sdcard/sdcard/";
+    //public static final String pathSdCard = "mnt/external_sd/";
     public static final int DEFAULT_UPDATE_AND_SHOW_DOLAR = 1 * 60 * 60 * 1000;
     public static final int DEFAULT_TIME_TIME_UPDATE_AND_SHOW = 1 * 1 * 1 * 10;
     public static final int DEFAULT_UPDATE_AND_SHOW_TEMPERATURA = 1 * 60 * 60 * 1000;
@@ -282,6 +283,14 @@ public class MainActivity extends AppCompatActivity {
 //                                        daoRss.setContadorRss(0);
 //                                    }
 
+                                    tvRssBottomMain.setText(daoRss.getmListNoticias().get(daoRss.getContadorRss()));
+
+                                    if(daoRss.getContadorRss() < daoRss.getmListNoticias().size()-1 ){
+                                        daoRss.setContadorRss(daoRss.getContadorRss()+1);
+                                    } else {
+                                        daoRss.setContadorRss(0);
+                                    }
+
                                 } catch (Exception e) {
                                     System.out.println(e);
                                     tvAvisoMain.setText(DEFAULT_MENSSAGE);
@@ -314,28 +323,14 @@ public class MainActivity extends AppCompatActivity {
 
                             try {
 
-                                if(new Random().nextInt(2) == 1){
+                                //tvTabMain.setText("Avisos");
+                                tvRssMain.setText(daoAvisos.getListAvisos().get(daoAvisos.getContadorAvisos()));
+                                Log.e("SIZE aviso", String.valueOf(daoAvisos.getListAvisos().size())+" - "+daoAvisos.getContadorAvisos());
 
-                                    tvTabMain.setText("Noticias");
-                                    tvRssMain.setText(daoRss.getmListNoticias().get(daoRss.getContadorRss()));
-
-                                    if(daoRss.getContadorRss() < daoRss.getmListNoticias().size()-1 ){
-                                        daoRss.setContadorRss(daoRss.getContadorRss()+1);
-                                    } else {
-                                        daoRss.setContadorRss(0);
-                                    }
-
+                                if(daoAvisos.getContadorAvisos() < daoAvisos.getListAvisos().size()-1 ){
+                                    daoAvisos.setContadorAvisos(daoAvisos.getContadorAvisos()+1);
                                 } else {
-
-                                    tvTabMain.setText("Avisos");
-                                    tvRssMain.setText(daoAvisos.getListAvisos().get(daoAvisos.getContadorAvisos()));
-                                    Log.e("SIZE aviso", String.valueOf(daoAvisos.getListAvisos().size())+" - "+daoAvisos.getContadorAvisos());
-
-                                    if(daoAvisos.getContadorAvisos() < daoAvisos.getListAvisos().size()-1 ){
-                                        daoAvisos.setContadorAvisos(daoAvisos.getContadorAvisos()+1);
-                                    } else {
-                                        daoAvisos.setContadorAvisos(0);
-                                    }
+                                    daoAvisos.setContadorAvisos(0);
                                 }
 
                             } catch (Exception e) {
@@ -368,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
 
-                        tvCotacaoDolarMain.setText("VALOR DO DOLAR "+daoDolar.getDolar()+" REAIS");
+                        tvCotacaoDolarMain.setText("VALOR DO DOLAR "+daoDolar.getDolar()+" REAIS - Galo Midia Avancada(84) 994 895 888");
 
                         if (daoTime.getMinute() < 10){
                             tvTimeMain.setText(daoTime.getHour()+":0"+daoTime.getMinute());
@@ -438,7 +433,7 @@ public class MainActivity extends AppCompatActivity {
         showRss();
         daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "showRss instanciada");
 
-        //showAvisos();
+        showAvisos();
 
         daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "------------ daoLog finalizada -------------");
     }
