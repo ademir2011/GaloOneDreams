@@ -41,18 +41,22 @@ public class DaoDolar {
             @Override
             public void run() {
 
-                while(checkConnection.isOnline()){
+                while(true){
 
-                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoDolar() -> com internet - entrou no while");
+                    while(checkConnection.isOnline()){
 
-                    new Update().execute(urlJsonObjDolar);
+                        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoDolar() -> com internet - entrou no while");
 
-                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoDolar() -> com internet - executou o Update().execute()");
+                        new Update().execute(urlJsonObjDolar);
 
-                    try {
-                        Thread.sleep(DEFAULT_UPDATE_AND_SHOW_DOLAR);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoDolar() -> com internet - executou o Update().execute()");
+
+                        try {
+                            Thread.sleep(DEFAULT_UPDATE_AND_SHOW_DOLAR);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
                     }
 
                 }

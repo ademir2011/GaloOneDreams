@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="br.com.onedreams.galo">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -16,7 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/MyMaterialTheme"
         android:persistent="true">
-        <activity android:name=".Activities.MainActivity" android:persistableMode="persistRootOnly"  android:screenOrientation="landscape">
+        <activity
+            android:name=".Activities.MainActivity"
+            android:persistableMode="persistRootOnly"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

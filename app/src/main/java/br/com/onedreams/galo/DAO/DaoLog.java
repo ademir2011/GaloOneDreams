@@ -48,15 +48,13 @@ public class DaoLog {
 
         BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
 
-        String msgLog = date+" - "+data;
+        String msgLog = date+" - "+data+"\n";
 
         try {
             bufferWritter.write(msgLog);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Log.e("LOG", msgLog);
 
         try {
             bufferWritter.close();

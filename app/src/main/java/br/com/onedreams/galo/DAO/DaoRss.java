@@ -17,19 +17,14 @@ import br.com.onedreams.galo.Classes.RssReader;
 public class DaoRss {
 
     private int contadorRss;
-    private List<String> mListNoticias;
+    private String rss = "";
+    private boolean enable = false;
     public static final String DEFAULT_MENSSAGE = "Galo Mídias Avançadas";
     CheckConnection checkConnection;
-    private DaoLog daoLog;
-    private String pathSdCard;
 
     public DaoRss(final String urlRssFonte, final int DEFAULT_TIME_UPDATE_RSS, Context context, final DaoLog daoLog, final String pathSdCard) {
 
-        mListNoticias = new ArrayList<>();
-        mListNoticias.add(DEFAULT_MENSSAGE);
         checkConnection = new CheckConnection(context);
-        this.daoLog = daoLog;
-        this.pathSdCard = pathSdCard;
 
         daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoRss() -> entrou no método");
 
@@ -37,25 +32,29 @@ public class DaoRss {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                while (checkConnection.isOnline()) {
+                while(true) {
 
-                    mListNoticias.clear();
+                    while (checkConnection.isOnline()) {
 
-                    contadorRss = 0;
+                        rss = "";
 
-                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoRss() -> com internet - entrou no while");
+                        contadorRss = 0;
 
-                    new UpdateRss().execute(urlRssFonte);
+                        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoRss() -> com internet - entrou no while");
 
-                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoRss() -> com internet - executou o UpdateRss.execute()");
+                        new UpdateRss().execute(urlRssFonte);
 
-                    try {
+                        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoRss() -> com internet - executou o UpdateRss.execute()");
 
-                        Thread.sleep(DEFAULT_TIME_UPDATE_RSS);
+                        try {
 
-                    } catch (Exception e) {
-                        // TODO: handle exception
+                            Thread.sleep(DEFAULT_TIME_UPDATE_RSS);
+
+                        } catch (Exception e) {
+                        }
+
                     }
+
                 }
             }
         }).start();
@@ -71,18 +70,26 @@ public class DaoRss {
 
             try {
 
+                enable = false;
+
                 RssReader rssReader = new RssReader(params[0]);
+
                 for (RssItem item : rssReader.getItems()){
                     String tempTitle = item.getTitle();
-                    Log.e(">>>", tempTitle);
                     tempTitle = tempTitle.replace("\"", "'");
-                    mListNoticias.add(tempTitle);
+
+                    char character = tempTitle.charAt(0);
+
+                    if (  Character.isUpperCase( character ) ){
+                        rss += tempTitle + " - Fonte G1 - ";
+                    }
+
                 }
+
+                enable = true;
 
             } catch (Exception e) {
                 Log.v("Error Parsing Data", e + "");
-                mListNoticias.clear();
-                mListNoticias.add(DEFAULT_MENSSAGE);
             }
 
             return null;
@@ -90,19 +97,19 @@ public class DaoRss {
 
     }
 
-    public List<String> getmListNoticias() {
-        return mListNoticias;
+    public String getRss() {
+        return rss;
     }
 
-    public void setmListNoticias(List<String> mListNoticias) {
-        this.mListNoticias = mListNoticias;
+    public void setRss(String rss) {
+        this.rss = rss;
     }
 
-    public int getContadorRss() {
-        return contadorRss;
+    public boolean isEnable() {
+        return enable;
     }
 
-    public void setContadorRss(int contadorRss) {
-        this.contadorRss = contadorRss;
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

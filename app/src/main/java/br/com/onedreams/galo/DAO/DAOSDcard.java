@@ -28,26 +28,26 @@ public class DAOSDcard {
     Map<Calendar, String> mapSdCardPropaganda;
     private boolean enable = false;
     private DaoLog daoLog;
-    private String pathSdCard;
+    private String pathSdCardConfig;
 
-    public DAOSDcard(final String pathSdCard, final int DEFAULT_TIME_READ_CONFIG_TXT, final DaoLog daoLog){
+    public DAOSDcard(final String pathSdCardConfig, final String pathSdCardInitLog, final int DEFAULT_TIME_READ_CONFIG_TXT, final DaoLog daoLog){
 
         mapSdCardPropaganda = new HashMap<>();
         this.daoLog = daoLog;
-        this.pathSdCard = pathSdCard;
+        this.pathSdCardConfig = pathSdCardConfig;
 
-        //daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoSDcard() -> entrou no método");
+        daoLog.SendMsgToTxt(pathSdCardInitLog, "initLog.txt", "daoSDcard() -> entrou no método");
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while(true){
 
-                    //daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoSDcard() -> com internet - entrou no while");
+                    daoLog.SendMsgToTxt(pathSdCardInitLog, "initLog.txt", "daoSDcard() -> com internet - entrou no while");
 
-                    new ReadSDcard().execute(pathSdCard);
+                    new ReadSDcard().execute(pathSdCardConfig);
 
-                    //daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoSDcard() -> com internet - executou o ReadSDcard.execute()");
+                    daoLog.SendMsgToTxt(pathSdCardInitLog, "initLog.txt", "daoSDcard() -> com internet - executou o ReadSDcard.execute()");
 
                     try {
                         Thread.sleep(DEFAULT_TIME_READ_CONFIG_TXT);
@@ -58,7 +58,7 @@ public class DAOSDcard {
             }
         }).start();
 
-        //daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoSDcard() -> finalizou");
+        daoLog.SendMsgToTxt(pathSdCardInitLog, "initLog.txt", "daoSDcard() -> finalizou");
 
     }
 

@@ -42,26 +42,31 @@ public class DaoAvisos {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                while (checkConnection.isOnline()) {
+                while(true){
 
-                    try {
+                    while (checkConnection.isOnline()) {
 
-                        listAvisos.clear();
+                        try {
 
-                        contadorAvisos = 0;
+                            listAvisos.clear();
 
-                        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoAvisos() -> com internet - entrou no while");
+                            contadorAvisos = 0;
 
-                        new UpdateAvisos().execute(urlAvisos);
+                            daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoAvisos() -> com internet - entrou no while");
 
-                        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoAvisos() -> com internet - executou o UpdateAvisos().execute()");
+                            new UpdateAvisos().execute(urlAvisos);
 
-                        Thread.sleep(DEFAULT_TIME_UPDATE_AVISOS);
+                            daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoAvisos() -> com internet - executou o UpdateAvisos().execute()");
 
-                    } catch (Exception e) {
-                        // TODO: handle exception
+                            Thread.sleep(DEFAULT_TIME_UPDATE_AVISOS);
+
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                        }
                     }
+
                 }
+
             }
         }).start();
 
@@ -91,7 +96,6 @@ public class DaoAvisos {
                         String line = "";
 
                         while ((line = bufferedReader.readLine()) != null) {
-
                             listAvisos.add(line);
                         }
 

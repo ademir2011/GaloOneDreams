@@ -3,6 +3,7 @@ package br.com.onedreams.galo.Activities;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -16,8 +17,11 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
+import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -58,7 +62,6 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.tvRssMain) TextView tvRssMain;
-    @Bind(R.id.tvAvisoMain) TextView tvAvisoMain;
     @Bind(R.id.ivPropagandaMain) ImageView ivPropagandaMain;
     @Bind(R.id.tvCotacaoDolarMain) TextView tvCotacaoDolarMain;
     @Bind(R.id.tvCloudMain) TextView tvCloudMain;
@@ -72,23 +75,19 @@ public class MainActivity extends AppCompatActivity {
 
     Handler mHandlerRss = new Handler();
 
-    Handler mHandlerAvisos = new Handler();
+    Handler mHandlerAvisos = new Handler(); 
 
     Handler mHandlerPropaganda = new Handler();
     public static final String PEP_ID = "1";
-    public static final String pathSdCard = "storage/external_storage/sdcard1/";
-    //public static final String pathSdCard = "mnt/external_sd/";
+//    public static final String pathSdCard = "storage/external_storage/sdcard1/";
+    public static final String pathSdCard = "mnt/external_sd/";
     public static final int DEFAULT_UPDATE_AND_SHOW_DOLAR = 1 * 60 * 60 * 1000;
-    public static final int DEFAULT_TIME_TIME_UPDATE_AND_SHOW = 1 * 1 * 1 * 10;
     public static final int DEFAULT_UPDATE_AND_SHOW_TEMPERATURA = 1 * 60 * 60 * 1000;
-    public static final int DEFAULT_TIME_SHOW_RSS = 1 * 10 * 1000;
+    public static final int DEFAULT_TIME_SHOW_RSS = 1 * 15 * 1000;
     public static final int DEFAULT_TIME_UPDATE_RSS = 1 * 60 * 60 * 1000;
-    public static final int DEFAULT_TIME_SHOW_AVISOS = 1 * 10 * 1000;
-    public static final int DEFAULT_TIME_UPDATE_AVISOS = 1 * 1 * 60 * 1000;
-    public static final int DEFAULT_TIME_UPDATE_PROPAGANDA = 1 * 60 * 60 * 1000;
+    public static final int DEFAULT_TIME_UPDATE_AVISOS = 1 * 10 * 60 * 1000;
     public static final int DEFAULT_TIME_SHOW_PROPAGANDA = 1 * 1 * 100;
     public static final int DEFAULT_TIME_READ_CONFIG_TXT = 1 * 60 * 60 * 1000;
-    public static final int DEFAULT_UPDATE_SEND_LOG = 1 * 1 * 60 * 1000;
 
     private URL urlAvisos;
 
@@ -125,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
         daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "----------- daoLogInstanciado -----------");
 
         ButterKnife.bind(this);
+        tvRssBottomMain.setMovementMethod(new ScrollingMovementMethod());
+        tvRssBottomMain.setSelected(true);
 
         fullscreen();
 
@@ -240,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        //deleteCache(MainActivity.this);
+
                     } catch (Exception e) {}
 
                     try {
@@ -255,61 +256,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showAvisos() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
 
-                while (true) {
-                    try {
-
-                        mHandlerAvisos.post(new Runnable() {
-
-                            @Override
-                            public void run() {
-
-                                try {
-                                    Log.e("SIZE aviso", String.valueOf(daoAvisos.getListAvisos().size())+" - "+daoAvisos.getContadorAvisos());
-//                                    tvAvisoMain.setText(daoAvisos.getListAvisos().get(daoAvisos.getContadorAvisos()));
-//
-//                                    if(daoAvisos.getContadorAvisos() < daoAvisos.getListAvisos().size()-1 ){
-//                                        daoAvisos.setContadorAvisos(daoAvisos.getContadorAvisos()+1);
-//                                    } else {
-//                                        daoAvisos.setContadorAvisos(0);
-//                                    }
-
-//                                    if(daoRss.getContadorRss() < daoRss.getmListNoticias().size()-1 ){
-//                                        daoRss.setContadorRss(daoRss.getContadorRss()+1);
-//                                    } else {
-//                                        daoRss.setContadorRss(0);
-//                                    }
-
-                                    tvRssBottomMain.setText(daoRss.getmListNoticias().get(daoRss.getContadorRss()));
-
-                                    if(daoRss.getContadorRss() < daoRss.getmListNoticias().size()-1 ){
-                                        daoRss.setContadorRss(daoRss.getContadorRss()+1);
-                                    } else {
-                                        daoRss.setContadorRss(0);
-                                    }
-
-                                } catch (Exception e) {
-                                    System.out.println(e);
-                                    tvAvisoMain.setText(DEFAULT_MENSSAGE);
-                                }
-
-                            }
-                        });
-
-                        Thread.sleep(DEFAULT_TIME_SHOW_AVISOS);
-
-                    } catch (Exception e) {
-
-                    }
-                }
-            }
-        }).start();
-    }
-
-    private void showRss() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -323,11 +270,9 @@ public class MainActivity extends AppCompatActivity {
 
                             try {
 
-                                //tvTabMain.setText("Avisos");
                                 tvRssMain.setText(daoAvisos.getListAvisos().get(daoAvisos.getContadorAvisos()));
-                                Log.e("SIZE aviso", String.valueOf(daoAvisos.getListAvisos().size())+" - "+daoAvisos.getContadorAvisos());
 
-                                if(daoAvisos.getContadorAvisos() < daoAvisos.getListAvisos().size()-1 ){
+                                if( daoAvisos.getContadorAvisos() < daoAvisos.getListAvisos().size()-1 ){
                                     daoAvisos.setContadorAvisos(daoAvisos.getContadorAvisos()+1);
                                 } else {
                                     daoAvisos.setContadorAvisos(0);
@@ -348,6 +293,49 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 }
+
+            }
+        }).start();
+    }
+
+    private void showRss() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                while (true) {
+
+                    if(daoRss.isEnable()){
+
+                        daoRss.setEnable(false);
+
+                        try {
+
+                            mHandlerAvisos.post(new Runnable() {
+
+                                @Override
+                                public void run() {
+
+                                    try {
+
+                                        tvRssBottomMain.setText(daoRss.getRss());
+                                        Log.e("EXIBIU","EXIBIU");
+
+                                    } catch (Exception e) {
+                                        System.out.println(e);
+                                        tvRssBottomMain.setText(DEFAULT_MENSSAGE);
+                                    }
+
+                                }
+                            });
+
+                        } catch (Exception e) {
+
+                        }
+                    }
+                }
+
             }
         }).start();
     }
@@ -363,7 +351,14 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
 
-                        tvCotacaoDolarMain.setText("VALOR DO DOLAR "+daoDolar.getDolar()+" REAIS - Galo Midia Avancada(84) 994 895 888");
+                        double valorDodolar = round(Double.parseDouble(daoDolar.getDolar()),2);
+
+                        if( String.valueOf(valorDodolar).length() == 3 ){
+                            tvCotacaoDolarMain.setText("VALOR DO DOLAR "+valorDodolar+"0 REAIS");
+                        } else {
+                            tvCotacaoDolarMain.setText("VALOR DO DOLAR "+valorDodolar+" REAIS");
+                        }
+
 
                         if (daoTime.getMinute() < 10){
                             tvTimeMain.setText(daoTime.getHour()+":0"+daoTime.getMinute());
@@ -371,7 +366,11 @@ public class MainActivity extends AppCompatActivity {
                             tvTimeMain.setText(daoTime.getHour()+":"+daoTime.getMinute());
                         }
 
-                        tvCloudMain.setText(String.valueOf((int)(daoTemperatura.getTemperatura()-273.15))+"ºC");
+                        double temperatura = daoTemperatura.getTemperatura()-273.15;
+
+                        if(temperatura != -273.15){
+                            tvCloudMain.setText(String.valueOf((int) temperatura )+"ºC");
+                        }
 
                         }
                     });
@@ -414,28 +413,28 @@ public class MainActivity extends AppCompatActivity {
 
         //-------------- ATUALIZA E EXIBE HORA
 
-        daoTime = new DaoTime(DEFAULT_TIME_TIME_UPDATE_AND_SHOW, daoLog, pathSdCard);
+        daoTime = new DaoTime();
         daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daoTime instanciada");
 
         //-------------- ATUALIZA E EXIBE PROPAGANDAS
 
-        daosDcard = new DAOSDcard(pathSdCard+"config.txt", DEFAULT_TIME_READ_CONFIG_TXT, daoLog);
+        daosDcard = new DAOSDcard(pathSdCard+"config.txt", pathSdCard, DEFAULT_TIME_READ_CONFIG_TXT, daoLog);
         daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "daosDcard instanciada");
 
         //-------------- UPDATE SCREEN
 
         showPropagandas();
-        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "showPropagandas instanciada");
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "showPropagandas iniciada");
 
         showDolarTimeTemperatura();
-        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "showDolarTimeTemperatura instanciada");
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "showDolarTimeTemperatura iniciada");
 
         showRss();
-        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "showRss instanciada");
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "showRss iniciada");
 
         showAvisos();
+        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "showAvisos iniciada");
 
-        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "------------ daoLog finalizada -------------");
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -445,14 +444,11 @@ public class MainActivity extends AppCompatActivity {
 
         decorView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
 
     }
-
 
     @Override
     protected void onResume() {
@@ -465,46 +461,13 @@ public class MainActivity extends AppCompatActivity {
         moveTaskToBack(false);
     }
 
-    public static class ImageHandler {
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
 
-        private static Picasso instance;
-
-        public static Picasso getSharedInstance(Context context){
-            if(instance == null){
-                instance = new Picasso.Builder(context).executor(Executors.newSingleThreadExecutor()).memoryCache(Cache.NONE).indicatorsEnabled(true).build();
-            }
-            return instance;
-        }
-    }
-
-    public static void deleteCache(Context context) {
-        try {
-            File dir = context.getCacheDir();
-            if (dir != null && dir.isDirectory()) {
-                deleteDir(dir);
-            }
-        } catch (Exception e) {}
-    }
-
-    public static boolean deleteDir(File dir) {
-        if (dir != null && dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
-                }
-            }
-        }
-        return dir.delete();
-    }
-
-    public static Bitmap getScreenShot(View view) {
-        View screenView = view.getRootView();
-        screenView.setDrawingCacheEnabled(true);
-        Bitmap bitmap = Bitmap.createBitmap(screenView.getDrawingCache());
-        screenView.setDrawingCacheEnabled(false);
-        return bitmap;
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
     }
 
 }
