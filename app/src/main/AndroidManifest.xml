@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="br.com.onedreams.galo">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -19,7 +20,7 @@
         <activity
             android:name=".Activities.MainActivity"
             android:persistableMode="persistRootOnly"
-            >
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

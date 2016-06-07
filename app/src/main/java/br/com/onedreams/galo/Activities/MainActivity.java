@@ -1,40 +1,24 @@
 package br.com.onedreams.galo.Activities;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
-import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.media.MediaPlayer;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
+import android.net.TrafficStats;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.Surface;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
-import com.squareup.picasso.Cache;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,15 +27,12 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.Executors;
-
 import br.com.onedreams.galo.Classes.CheckConnection;
+import br.com.onedreams.galo.Classes.Statistics;
 import br.com.onedreams.galo.DAO.DAOSDcard;
 import br.com.onedreams.galo.DAO.DaoAvisos;
 import br.com.onedreams.galo.DAO.DaoDolar;
 import br.com.onedreams.galo.DAO.DaoLog;
-import br.com.onedreams.galo.DAO.DaoPropaganda;
 import br.com.onedreams.galo.DAO.DaoRss;
 import br.com.onedreams.galo.DAO.DaoTemperatura;
 import br.com.onedreams.galo.DAO.DaoTime;
@@ -68,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.tvTimeMain) TextView tvTimeMain;
     @Bind(R.id.pbLoading) ProgressBar pbLoading;
     @Bind(R.id.vvPropagandaMain) VideoView vvPropagandaMain;
-    @Bind(R.id.tvTabMain) TextView tvTabMain;
     @Bind(R.id.tvRssBottomMain) TextView tvRssBottomMain;
 
     Handler mHandlerScreen = new Handler();
@@ -78,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
     Handler mHandlerAvisos = new Handler(); 
 
     Handler mHandlerPropaganda = new Handler();
-    public static final String PEP_ID = "1";
-//    public static final String pathSdCard = "storage/external_storage/sdcard1/";
-    public static final String pathSdCard = "mnt/external_sd/";
+    public static final String PEP_ID = "0";
+    public static final String pathSdCard = "storage/external_storage/sdcard1/";
+//    public static final String pathSdCard = "mnt/external_sd/";
     public static final int DEFAULT_UPDATE_AND_SHOW_DOLAR = 1 * 60 * 60 * 1000;
     public static final int DEFAULT_UPDATE_AND_SHOW_TEMPERATURA = 1 * 60 * 60 * 1000;
     public static final int DEFAULT_TIME_SHOW_RSS = 1 * 15 * 1000;
@@ -88,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int DEFAULT_TIME_UPDATE_AVISOS = 1 * 10 * 60 * 1000;
     public static final int DEFAULT_TIME_SHOW_PROPAGANDA = 1 * 1 * 100;
     public static final int DEFAULT_TIME_READ_CONFIG_TXT = 1 * 60 * 60 * 1000;
+    public static final int DEFAULT_TIME_WRITE_STATISTICS = 1 * 1 * 10 * 1000;
 
     private URL urlAvisos;
 
@@ -124,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
         daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "----------- daoLogInstanciado -----------");
 
         ButterKnife.bind(this);
+
+        //new Statistics(this).execute(pathSdCard, DEFAULT_TIME_WRITE_STATISTICS);
+
         tvRssBottomMain.setMovementMethod(new ScrollingMovementMethod());
         tvRssBottomMain.setSelected(true);
 
@@ -147,6 +131,13 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                try {
+                    Thread.sleep(2 * 60 * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 while(!checkConnection.isOnline()){
                     try {
                         daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "dispositivo sem internet");
@@ -211,21 +202,65 @@ public class MainActivity extends AppCompatActivity {
                                                     String ext = value.substring(value.lastIndexOf(".") + 1);
 
                                                     if(ext.equals("mp4")){
-                                                        ivPropagandaMain.setVisibility(View.GONE);
-                                                        vvPropagandaMain.setVisibility(View.VISIBLE);
-                                                        vvPropagandaMain.setVideoPath(f.getAbsolutePath());
-                                                        vvPropagandaMain.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                                                            @Override
-                                                            public void onPrepared(MediaPlayer mp) {
-                                                        vvPropagandaMain.start();
 
+                                                        try {
+
+                                                            ivPropagandaMain.setVisibility(View.GONE);
+                                                            vvPropagandaMain.setVisibility(View.VISIBLE);
+
+                                                            if(f.getAbsolutePath().equals("") || f.getAbsolutePath() == null){
+                                                                vvPropagandaMain.setVisibility(View.GONE);
+                                                                ivPropagandaMain.setVisibility(View.VISIBLE);
+                                                                ivPropagandaMain.setImageBitmap( BitmapFactory.decodeResource(getResources(), R.drawable.pep003) );
+                                                                daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "problema ao reproduzir vídeo");
                                                             }
-                                                        });
+
+                                                            vvPropagandaMain.setVideoPath(f.getAbsolutePath());
+                                                            vvPropagandaMain.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                                                @Override
+                                                                public void onPrepared(MediaPlayer mp) {
+                                                                    vvPropagandaMain.start();
+                                                                }
+                                                            });
+
+                                                            vvPropagandaMain.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                                                                @Override
+                                                                public boolean onError(MediaPlayer mp, int what, int extra) {
+                                                                    vvPropagandaMain.stopPlayback();
+                                                                    vvPropagandaMain.setVisibility(View.GONE);
+                                                                    ivPropagandaMain.setVisibility(View.VISIBLE);
+                                                                    ivPropagandaMain.setImageBitmap( BitmapFactory.decodeResource(getResources(), R.drawable.pep003) );
+                                                                    Log.e("erro","erro ao processar video");
+                                                                    return true;
+                                                                }
+                                                            });
+
+                                                        } catch ( Exception e) {
+
+                                                            vvPropagandaMain.setVisibility(View.GONE);
+                                                            ivPropagandaMain.setVisibility(View.VISIBLE);
+                                                            ivPropagandaMain.setImageBitmap( BitmapFactory.decodeResource(getResources(), R.drawable.pep003) );
+                                                            daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "problema ao reproduzir vídeo");
+
+                                                        }
+
                                                     } else {
-                                                        vvPropagandaMain.setVisibility(View.GONE);
-                                                        ivPropagandaMain.setVisibility(View.VISIBLE);
-                                                        Bitmap bmp = BitmapFactory.decodeFile(f.getAbsolutePath());
-                                                        ivPropagandaMain.setImageBitmap(bmp);
+
+                                                        try {
+
+                                                            vvPropagandaMain.setVisibility(View.GONE);
+                                                            ivPropagandaMain.setVisibility(View.VISIBLE);
+                                                            Bitmap bmp = BitmapFactory.decodeFile(f.getAbsolutePath());
+                                                            ivPropagandaMain.setImageBitmap(bmp);
+
+                                                        } catch ( Exception e) {
+
+                                                            vvPropagandaMain.setVisibility(View.GONE);
+                                                            ivPropagandaMain.setVisibility(View.VISIBLE);
+                                                            ivPropagandaMain.setImageBitmap( BitmapFactory.decodeResource(getResources(), R.drawable.pep003) );
+                                                            daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "problema ao reproduzir imagem");
+
+                                                        }
 
                                                     }
 
@@ -358,7 +393,6 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             tvCotacaoDolarMain.setText("VALOR DO DOLAR "+valorDodolar+" REAIS");
                         }
-
 
                         if (daoTime.getMinute() < 10){
                             tvTimeMain.setText(daoTime.getHour()+":0"+daoTime.getMinute());

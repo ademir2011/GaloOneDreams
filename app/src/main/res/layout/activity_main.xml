@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".Activities.MainActivity"
     android:background="@drawable/painel"
-    android:rotation="0">
+    android:rotation="180">
 
     <RelativeLayout
         android:visibility="gone"
@@ -34,11 +34,12 @@
             android:id="@+id/ivPropagandaMain"
             android:layout_width="1250dp"
             android:layout_height="550dp"
-            android:src="@drawable/rsz_t1234"
+            android:src="@drawable/pep003"
             android:background="@android:color/black"
             android:scaleType="centerCrop"/>
 
         <VideoView
+            android:rotation="180"
             android:visibility="invisible"
             android:id="@+id/vvPropagandaMain"
             android:layout_width="1250dp"
@@ -54,7 +55,7 @@
         android:layout_marginTop="10dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:background="#30E2E2E1"
+        android:background="#90000000"
         android:gravity="center">
 
         <ImageView
