@@ -203,7 +203,11 @@ public class MainActivity extends AppCompatActivity {
 
                                                     if(ext.equals("mp4")){
 
+                                                        daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "EXIBE O VÌDEO");
+
                                                         try {
+
+                                                            daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "entra no try");
 
                                                             ivPropagandaMain.setVisibility(View.GONE);
                                                             vvPropagandaMain.setVisibility(View.VISIBLE);
@@ -220,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
                                                                 @Override
                                                                 public void onPrepared(MediaPlayer mp) {
                                                                     vvPropagandaMain.start();
+                                                                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "video iniciado");
                                                                 }
                                                             });
 
@@ -230,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                                                                     vvPropagandaMain.setVisibility(View.GONE);
                                                                     ivPropagandaMain.setVisibility(View.VISIBLE);
                                                                     ivPropagandaMain.setImageBitmap( BitmapFactory.decodeResource(getResources(), R.drawable.pep003) );
-                                                                    Log.e("erro","erro ao processar video");
+                                                                    daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "Erro ao processar video");
                                                                     return true;
                                                                 }
                                                             });
@@ -248,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                         try {
 
+                                                            daoLog.SendMsgToTxt(pathSdCard, "initLog.txt", "inicio imagem propaganda");
                                                             vvPropagandaMain.setVisibility(View.GONE);
                                                             ivPropagandaMain.setVisibility(View.VISIBLE);
                                                             Bitmap bmp = BitmapFactory.decodeFile(f.getAbsolutePath());
